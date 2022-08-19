@@ -1,0 +1,21 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "learn nodejs",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "js",
+    "nodejs",
+    "ts"
+  ],
+  "author": "Evgene Popolamov",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}

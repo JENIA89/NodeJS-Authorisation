@@ -21,6 +21,8 @@ export class App {
     this.app.use('/users', this.userController.router);
   }
 
+  useExceptionFilteres() {}
+
   public async init() {
     this.useRoutes();
     this.server = this.app.listen(this.port);

@@ -17,11 +17,11 @@ export class UserController extends BaseController implements IUsersController {
     ]);
   }
 
-  register(req: Request, res: Response, next: NextFunction) {
+  register(req: Request, res: Response, next: NextFunction): void {
     this.ok(res, 'register');
   }
 
-  login(req: Request, res: Response, next: NextFunction) {
+  login(req: Request, res: Response, next: NextFunction): void {
     // this.ok(res, 'login');
     next(new HTTPError(401, 'not authorized', 'login'));
   }

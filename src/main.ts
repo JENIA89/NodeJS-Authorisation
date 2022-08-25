@@ -4,7 +4,7 @@ import { App } from './app';
 import { ExceptionFilter } from './errors/exception.filter';
 import { LoggerService } from './logger/logger.service';
 import { UserController } from './users/users.controller';
-import { TYPES } from './types';
+import { IBootstrapReturn, TYPES } from './types';
 import { IExceptionFilter } from './errors/exception.filter.interface';
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
@@ -14,7 +14,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<App>(TYPES.Application).to(App);
 });
 
-const bootstrap = () => {
+const bootstrap = (): IBootstrapReturn => {
   const appContainer = new Container();
   appContainer.load(appBindings);
   const app = appContainer.get<App>(TYPES.Application);

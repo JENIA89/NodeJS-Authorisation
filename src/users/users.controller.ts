@@ -5,9 +5,10 @@ import { inject, injectable } from 'inversify';
 import { BaseController } from '../common/base.controller';
 import { HTTPError } from '../errors/http-error.class';
 import { TYPES } from '../types';
-import 'reflect-metadata';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { UserLoginDto } from './dto/user-login.dto';
+import { User } from './user.entity';
+import 'reflect-metadata';
 
 @injectable()
 export class UserController extends BaseController implements IUsersController {
@@ -19,9 +20,15 @@ export class UserController extends BaseController implements IUsersController {
     ]);
   }
 
-  register(req: Request<{}, {}, UserRegisterDto>, res: Response, next: NextFunction): void {
-    console.log(req.body);
-    this.ok(res, 'register');
+  async register(
+    { body }: Request<{}, {}, UserRegisterDto>,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    console.log(body);
+    const user = new User(body.email, body.name);
+    await user.setPassword(body.password);
+    this.ok(res, user);
   }
 
   login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction): void {

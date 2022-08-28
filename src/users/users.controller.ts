@@ -7,12 +7,15 @@ import { HTTPError } from '../errors/http-error.class';
 import { TYPES } from '../types';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { UserLoginDto } from './dto/user-login.dto';
-import { User } from './user.entity';
 import 'reflect-metadata';
+import { IUsersService } from './users.service.interface';
 
 @injectable()
 export class UserController extends BaseController implements IUsersController {
-  constructor(@inject(TYPES.ILogger) private loggerService: ILogger) {
+  constructor(
+    @inject(TYPES.ILogger) private loggerService: ILogger,
+    @inject(TYPES.UserService) private userService: IUsersService,
+  ) {
     super(loggerService);
     this.bindRoutes([
       { path: '/register', method: 'post', func: this.register },
@@ -25,10 +28,11 @@ export class UserController extends BaseController implements IUsersController {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    console.log(body);
-    const user = new User(body.email, body.name);
-    await user.setPassword(body.password);
-    this.ok(res, user);
+    const result = await this.userService.create(body);
+    if (!result) {
+      return next(new HTTPError(422, 'User already exists'));
+    }
+    this.ok(res, result);
   }
 
   login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction): void {

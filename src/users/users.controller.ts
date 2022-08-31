@@ -1,3 +1,4 @@
+import { ValidateMiddleware } from './../common/validate.middleware';
 import { ILogger } from './../logger/logger.interface';
 import { IUsersController } from './users.controller.interface';
 import { NextFunction, Response, Request } from 'express';
@@ -18,7 +19,12 @@ export class UserController extends BaseController implements IUsersController {
   ) {
     super(loggerService);
     this.bindRoutes([
-      { path: '/register', method: 'post', func: this.register },
+      {
+        path: '/register',
+        method: 'post',
+        func: this.register,
+        middlewares: [new ValidateMiddleware(UserRegisterDto)],
+      },
       { path: '/login', method: 'post', func: this.login },
     ]);
   }

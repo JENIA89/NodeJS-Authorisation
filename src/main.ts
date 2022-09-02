@@ -1,3 +1,4 @@
+import { IUsersRepository } from './users/users.repository.interface';
 import { IConfigSevice } from './config/config.service.interface';
 import { ILogger } from './logger/logger.interface';
 import { Container, ContainerModule, interfaces } from 'inversify';
@@ -12,6 +13,7 @@ import { IUsersService } from './users/users.service.interface';
 import { IUsersController } from './users/users.controller.interface';
 import { ConfigService } from './config/config.service';
 import { PrismaService } from './database/prisma.service';
+import { UsersPerository } from './users/users.repository';
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();
@@ -20,6 +22,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<IUsersService>(TYPES.UserService).to(UserService);
   bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
   bind<IConfigSevice>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
+  bind<IUsersRepository>(TYPES.UsersPerository).to(UsersPerository).inSingletonScope();
   bind<App>(TYPES.Application).to(App);
 });
 

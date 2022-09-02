@@ -9,6 +9,7 @@ export const TYPES = {
   ExceptionFilter: Symbol.for('ExceptionFilter'),
   ConfigService: Symbol.for('ConfigService'),
   PrismaService: Symbol.for('PrismaService'),
+  UsersPerository: Symbol.for('UsersPerository'),
 };
 
 export interface IBootstrapReturn {

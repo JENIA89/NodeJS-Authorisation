@@ -10,12 +10,15 @@ import { UserRegisterDto } from './dto/user-register.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import 'reflect-metadata';
 import { IUsersService } from './users.service.interface';
+import { sign } from 'jsonwebtoken';
+import { IConfigSevice } from '../config/config.service.interface';
 
 @injectable()
 export class UserController extends BaseController implements IUsersController {
   constructor(
     @inject(TYPES.ILogger) private loggerService: ILogger,
     @inject(TYPES.UserService) private userService: IUsersService,
+    @inject(TYPES.ConfigService) private configService: IConfigSevice,
   ) {
     super(loggerService);
     this.bindRoutes([
@@ -30,6 +33,12 @@ export class UserController extends BaseController implements IUsersController {
         method: 'post',
         func: this.login,
         middlewares: [new ValidateMiddleware(UserLoginDto)],
+      },
+      {
+        path: '/info',
+        method: 'get',
+        func: this.info,
+        middlewares: [],
       },
     ]);
   }
@@ -52,11 +61,33 @@ export class UserController extends BaseController implements IUsersController {
     next: NextFunction,
   ): Promise<void> {
     const result = await this.userService.validateUser(body);
-    console.log(result);
-
     if (!result) {
       return next(new HTTPError(401, 'Authorisation Error'));
     }
-    this.ok(res, {});
+
+    const jwt = await this.signJWT(body.email, this.configService.get('SECRET_KEY'));
+    this.ok(res, { jwt });
+  }
+
+  async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
+    this.ok(res, { email: user });
+  }
+
+  private signJWT(email: string, secret: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      sign(
+        {
+          email,
+        },
+        secret,
+        {
+          algorithm: 'HS256',
+        },
+        (err, token) => {
+          if (err) reject(err);
+          resolve(token as string);
+        },
+      );
+    });
   }
 }

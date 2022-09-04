@@ -8,6 +8,7 @@ import { UserController } from './users/users.controller';
 import 'reflect-metadata';
 import { IExceptionFilter } from './errors/exception.filter.interface';
 import { PrismaService } from './database/prisma.service';
+import { AuthMiddleware } from './common/auth.middleware';
 
 @injectable()
 export class App {
@@ -28,6 +29,8 @@ export class App {
 
   useMiddleware(): void {
     this.app.use(express.json());
+    const authMiddleware = new AuthMiddleware(this.configService.get('SECRET_KEY'));
+    this.app.use(authMiddleware.execute.bind(authMiddleware));
   }
 
   useRoutes(): void {

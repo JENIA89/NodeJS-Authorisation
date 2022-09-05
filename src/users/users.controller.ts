@@ -12,6 +12,7 @@ import 'reflect-metadata';
 import { IUsersService } from './users.service.interface';
 import { sign } from 'jsonwebtoken';
 import { IConfigSevice } from '../config/config.service.interface';
+import { AuthGuard } from '../common/auth.guard';
 
 @injectable()
 export class UserController extends BaseController implements IUsersController {
@@ -38,7 +39,7 @@ export class UserController extends BaseController implements IUsersController {
         path: '/info',
         method: 'get',
         func: this.info,
-        middlewares: [],
+        middlewares: [new AuthGuard()],
       },
     ]);
   }

@@ -71,7 +71,8 @@ export class UserController extends BaseController implements IUsersController {
   }
 
   async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
-    this.ok(res, { email: user });
+    const userInfo = await this.userService.getUserInfo(user);
+    this.ok(res, { email: userInfo?.email, id: userInfo?.id });
   }
 
   private signJWT(email: string, secret: string): Promise<string> {
